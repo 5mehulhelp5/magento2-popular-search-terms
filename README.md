@@ -1,5 +1,25 @@
 # Popular Search Terms Module for Magento 2
 
+This professional module for Magento 2 enhances the search experience by combining two powerful features:
+
+- Display of the most popular search terms on your store, sorted by frequency or search date
+- Saving and displaying each visitor's personal search history
+
+Designed to increase engagement and conversion rates, this module helps customers quickly discover relevant products based on collective behaviors (popular searches) and personal preferences (search history).
+
+Key features:
+- Responsive and elegant user interface based on Knockout.js
+- Flexible configuration via Magento admin (number of terms, time period, sorting)
+- Intelligent caching with no performance impact
+- Secure storage of recent searches via Magento's native storage system
+- Complete customization via XML layout
+- Fully compatible with Magento 2.4.x and PHP 8.1/8.2/8.3
+- Clean code adhering to Magento 2 development standards
+
+Perfect for merchants looking to improve navigation, increase engagement, and boost conversions by facilitating product discovery.
+
+---------------
+
 Ce module permet d'afficher les termes de recherche populaires sur votre site Magento 2.
 Le module charge les termes par AJAX et utilise Knockout.js pour l'affichage.
 La mise en cache est implémentée en utilisant le cache de collections standard de Magento pour garantir de bonnes performances.
@@ -52,7 +72,6 @@ bin/magento cache:clean
    - **Number of Terms** : Nombre de termes à afficher
    - **Sort Order** : Tri par popularité ou par date de recherche
    - **Time Period (days)** : Période de temps à considérer (en jours)
-   - **Cache Lifetime (seconds)** : Durée de vie du cache (en secondes)
 
 ## Utilisation
 
