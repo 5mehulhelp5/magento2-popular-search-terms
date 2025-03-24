@@ -5,6 +5,8 @@
 [![Magento](https://img.shields.io/badge/Magento-2.4.x-brightgreen.svg)](https://magento.com)
 [![PHP](https://img.shields.io/badge/PHP-8.1|8.2|8.3-blue.svg)](https://www.php.net)
 
+[SPONSOR: Amadeco](https://www.amadeco.fr)
+
 A Magento 2 module that enhances the search experience by displaying popular search terms and personal search history. Optimizes product discovery and conversion rates by suggesting relevant terms based on both collective and individual user behaviors, all configurable from the admin and with no performance impact thanks to intelligent caching.
 
 ## Features
