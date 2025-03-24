@@ -1,0 +1,107 @@
+/**
+ * Amadeco PopularSearchTerms Module
+ *
+ * @category   Amadeco
+ * @package    Amadeco_PopularSearchTerms
+ * @author     Ilan Parmentier
+ */
+
+ & when (@media-common = true) {
+    .block-search-terms {
+        margin-bottom: @indent__m;
+
+        .block-title {
+            margin-bottom: @indent__s;
+            padding-bottom: @indent__s;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .search-terms-container {
+            .search-terms-loading {
+                text-align: center;
+                padding: @indent__s 0;
+
+                .loader {
+                    display: inline-block;
+                }
+            }
+
+            .search-terms-error {
+                color: #e02b27;
+                padding: @indent__xs 0;
+            }
+
+            .popular-terms-section,
+            .recent-searches-section {
+                margin-bottom: 15px;
+
+                h4 {
+                    font-size: 14px;
+                    font-weight: 600;
+                    margin-bottom: @indent__s;
+                }
+
+                ul {
+                    list-style: none;
+                    margin: 0;
+                    padding: 0;
+
+                    li {
+                        margin: 3px 0;
+                        padding: 3px 0;
+
+                        a {
+                            text-decoration: none;
+
+                            &:hover {
+                                text-decoration: underline;
+                            }
+                        }
+
+                        .term-popularity,
+                        .search-date {
+                            color: #999;
+                            font-size: 0.9em;
+                            margin-left: @indent__xs;
+                        }
+                    }
+                }
+
+                .actions {
+                    margin-top: @indent__s;
+
+                    button {
+                        font-size: 0.9em;
+                        padding: @indent__xs @indent__s;
+                    }
+                }
+            }
+
+            .recent-searches-section {
+                margin-bottom: @indent__m;
+                padding-bottom: 15px;
+                border-bottom: 1px dashed #e8e8e8;
+            }
+
+            .no-terms-message {
+                font-style: italic;
+                color: #999;
+                padding: @indent__xs 0;
+            }
+        }
+    }
+}
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+
+    .block-search-terms {
+        .popular-terms-list,
+        .recent-searches-list {
+            li {
+                display: inline-block;
+                margin-right: 10px;
+            }
+        }
+    }
+
+}

@@ -1,0 +1,42 @@
+<?php
+/**
+ * Amadeco PopularSearchTerms Module
+ *
+ * @category   Amadeco
+ * @package    Amadeco_PopularSearchTerms
+ * @author     Ilan Parmentier
+ */
+
+/**
+ * @var \Amadeco\PopularSearchTerms\Block\SearchTerms $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
+ */
+?>
+<?php if ($block->isEnabled()): ?>
+    <div class="block block-search-terms">
+        <div class="block-title">
+            <strong role="heading" aria-level="2"><?= $escaper->escapeHtml(__('Search Terms')) ?></strong>
+        </div>
+        <div class="block-content">
+            <div id="amadeco-search-terms" data-bind="scope: 'search-terms'" class="amadeco-search-terms">
+                <!-- ko template: getTemplate() --><!-- /ko -->
+            </div>
+        </div>
+    </div>
+
+    <script type="text/x-magento-init">
+    {
+        "#amadeco-search-terms": {
+            "Magento_Ui/js/core/app": <?= /* @noEscape */ $block->getJsLayout() ?>
+        }
+    }
+    </script>
+
+    <?php $jsonConfig = /* @noEscape */ $block->getSerializedSearchTermsConfig();
+    $scriptString = <<<script
+        window.searchTermsConfig = {$jsonConfig};
+    script;
+    ?>
+    <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false); ?>
+<?php endif; ?>
