@@ -20,7 +20,7 @@ This professional module for Magento 2 enhances the search experience by combini
 
 ## Screenshots
 
-[Capture-d-e-cran-2025-03-24-a-18-25-30.png](https://postimg.cc/NyZL9PKN)
+![screenshot](https://github.com/user-attachments/assets/9ed66fe2-b511-4c0e-8394-9cb9718fa182)
 
 ## Requirements
 
