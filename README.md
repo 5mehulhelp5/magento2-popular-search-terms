@@ -1,27 +1,36 @@
-# Popular Search Terms Module for Magento 2
+# Magento 2 Search Terms Module
 
-Ce module permet d'afficher les termes de recherche populaires sur votre site Magento 2.
-Le module charge les termes par AJAX et utilise Knockout.js pour l'affichage.
-La mise en cache est implémentée en utilisant le cache de collections standard de Magento pour garantir de bonnes performances.
+[![Latest Stable Version](https://img.shields.io/github/v/release/Amadeco/magento2-popular-search-terms)](https://github.com/Amadeco/magento2-popular-search-terms/releases)
+[![License](https://img.shields.io/github/license/Amadeco/magento2-popular-search-terms)](https://github.com/Amadeco/magento2-popular-search-terms/blob/main/LICENSE)
+[![Magento](https://img.shields.io/badge/Magento-2.4.x-brightgreen.svg)](https://magento.com)
+[![PHP](https://img.shields.io/badge/PHP-8.1|8.2|8.3-blue.svg)](https://www.php.net)
 
-## Fonctionnalités
+A Magento 2 module that enhances the search experience by displaying popular search terms and personal search history. Optimizes product discovery and conversion rates by suggesting relevant terms based on both collective and individual user behaviors, all configurable from the admin and with no performance impact thanks to intelligent caching.
 
-- Affichage des termes de recherche les plus populaires ou les plus récents
-- Configuration du nombre de termes à afficher
-- Choix de la période de temps à considérer (en jours)
-- Tri par popularité ou par date
-- Mise en cache des données (utilise le cache `collections` de Magento)
-- Interface utilisateur réactive avec Knockout.js
-- Chargement AJAX pour ne pas ralentir le chargement initial de la page
+## Features
 
-## Compatibilité
+This professional module for Magento 2 enhances the search experience by combining two powerful features:
 
-- Magento 2.4.x et supérieur
-- PHP 8.1, 8.2, 8.3
+- **Popular Search Terms**: Display the most popular search terms on your store, sorted by frequency or search date
+- **Recent Searches**: Save and display each visitor's personal search history
+- **Smart Caching**: Efficiently caches data using Magento's native collection caching mechanism
+- **Easy Configuration**: Fully configurable through admin panel
+- **Customizable**: Extensive layout customization options via XML
+- **Internationalization**: Complete translations available (en_US, fr_FR)
+
+## Screenshots
+
+![Search Terms Module]([https://user-images.githubusercontent.com/your-username/your-repo/assets/screenshot.png])
+
+
+## Requirements
+
+- Magento 2.4.x
+- PHP 8.1, 8.2, or 8.3
 
 ## Installation
 
-### Via Composer (recommandé)
+### Via Composer (Recommended)
 
 ```bash
 composer require amadeco/module-popular-search-terms
@@ -31,10 +40,10 @@ bin/magento setup:di:compile
 bin/magento cache:clean
 ```
 
-### Installation manuelle
+### Manual Installation
 
-1. Téléchargez le code source et placez-le dans le dossier `app/code/Amadeco/PopularSearchTerms/`
-2. Activez le module et mettez à jour votre installation :
+1. Download the code and extract to `app/code/Amadeco/PopularSearchTerms/`
+2. Run the following commands:
 
 ```bash
 bin/magento module:enable Amadeco_PopularSearchTerms
@@ -45,53 +54,104 @@ bin/magento cache:clean
 
 ## Configuration
 
-1. Connectez-vous à l'administration de Magento
-2. Allez dans **Stores > Configuration > Catalog > Popular Search Terms**
-3. Configurez les options suivantes :
-   - **Enable Module** : Active ou désactive le module
-   - **Number of Terms** : Nombre de termes à afficher
-   - **Sort Order** : Tri par popularité ou par date de recherche
-   - **Time Period (days)** : Période de temps à considérer (en jours)
-   - **Cache Lifetime (seconds)** : Durée de vie du cache (en secondes)
+1. Go to **Stores > Configuration > Catalog > Popular Search Terms**
+2. Configure the options:
+   - **Enable Module**: Activate or deactivate the module
+   - **Number of Terms**: Number of search terms to display
+   - **Sort Order**: Sort by popularity or recency
+   - **Time Period (days)**: Number of days to look back for search terms
+   - **Cache Lifetime (seconds)**: Time to cache the search terms data
 
-## Utilisation
+## Customization
 
-Le module ajoute automatiquement un bloc dans la sidebar supplémentaire. Vous pouvez également ajouter le bloc manuellement dans vos templates en utilisant le code suivant :
+### XML Layout
 
-```php
-<?php echo $block->getLayout()->createBlock('Amadeco\PopularSearchTerms\Block\PopularTerms')->setTemplate('Amadeco_PopularSearchTerms::popular_terms.phtml')->toHtml(); ?>
-```
-
-Ou via XML layout :
+The module can be extensively customized via layout XML:
 
 ```xml
-<block class="Amadeco\PopularSearchTerms\Block\PopularTerms"
-       name="amadeco.popular.search.terms"
-       template="Amadeco_PopularSearchTerms::popular_terms.phtml" />
+<referenceContainer name="sidebar.additional">
+    <block class="Amadeco\PopularSearchTerms\Block\SearchTerms"
+           name="amadeco.search.terms"
+           ifconfig="catalog/popular_search_terms/enabled">
+        <arguments>
+            <!-- Recent searches configuration -->
+            <argument name="max_recent_searches" xsi:type="number">5</argument>
+            
+            <!-- Form selectors configuration -->
+            <argument name="search_form_id" xsi:type="string">search_mini_form</argument>
+            <argument name="search_input_name" xsi:type="string">q</argument>
+            <argument name="storage_key" xsi:type="string">recent-searches</argument>
+            
+            <!-- JS Layout configuration -->
+            <argument name="jsLayout" xsi:type="array">
+                <item name="components" xsi:type="array">
+                    <item name="search-terms" xsi:type="array">
+                        <item name="component" xsi:type="string">Amadeco_PopularSearchTerms/js/search-terms</item>
+                        <item name="config" xsi:type="array">
+                            <item name="template" xsi:type="string">Amadeco_PopularSearchTerms/search-terms-template</item>
+                            <item name="hasRecentSearches" xsi:type="boolean">true</item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
+    </block>
+</referenceContainer>
 ```
 
-## Personnalisation
+### Configuration Parameters
 
-### Styles CSS
+- **max_recent_searches**: Maximum number of recent searches to display (default: 5)
+- **search_form_id**: ID of the search form to monitor (default: "search_mini_form")
+- **search_input_name**: Name of the input field containing the search term (default: "q")
+- **storage_key**: Key used to store recent searches in client storage (default: "recent-searches")
 
-Les styles sont définis dans le fichier `view/frontend/web/css/source/_module.less`. Vous pouvez les surcharger dans votre thème ou les modifier directement.
+### Adding to a Custom Location
 
-### Template Knockout
+You can add the module to any custom location using XML layout or with PHP:
 
-Le template Knockout se trouve dans `view/frontend/web/template/popular-terms-template.html`. Vous pouvez le personnaliser selon vos besoins.
-
-## Cache
-
-Ce module utilise le mécanisme de cache `collections` standard de Magento pour stocker les données des termes de recherche. Pour vider le cache spécifique à ce module, vous pouvez utiliser cette commande :
-
-```bash
-bin/magento cache:clean collections
+```php
+<?php echo $block->getLayout()
+    ->createBlock('Amadeco\PopularSearchTerms\Block\SearchTerms')
+    ->setMaxRecentSearches(3)
+    ->toHtml(); ?>
 ```
+
+### Styling
+
+The module includes LESS styles that can be overridden in your theme. The main styles are defined in:
+
+```
+view/frontend/web/css/source/_module.less
+```
+
+## Translations
+
+The module includes complete translations for:
+
+- English (en_US)
+- French (fr_FR)
+
+To add additional translations, create a CSV file in:
+
+```
+app/code/Amadeco/PopularSearchTerms/i18n/your_locale.csv
+```
+
+## How it Works
+
+1. **Popular Terms**: Uses Magento's built-in search query collection to retrieve and display the most popular or recent search terms.
+2. **Recent Searches**: Utilizes Magento's customer-data storage system to save search queries performed by the current user.
+3. **Performance**: Implements intelligent caching using Magento's native mechanisms to ensure minimal performance impact.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Support
 
-Si vous rencontrez des problèmes ou avez des questions, veuillez ouvrir un ticket sur le dépôt GitHub du module.
+If you encounter any issues or have questions, please [open an issue](https://github.com/Amadeco/magento2-popular-search-terms/issues) on GitHub.
 
-## Licence
+## Contributing
 
-Ce module est distribué sous licence MIT. Voir le fichier LICENSE pour plus de détails.
+Contributions are welcome! Please feel free to submit a Pull Request.
