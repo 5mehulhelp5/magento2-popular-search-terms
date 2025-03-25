@@ -40,11 +40,6 @@ class Config extends AbstractHelper
     public const XML_PATH_TIME_PERIOD = 'catalog/popular_search_terms/time_period';
 
     /**
-     * Default cache lifetime in seconds
-     */
-    public const DEFAULT_CACHE_LIFETIME = 86400; // 24 hours
-
-    /**
      * @param Context $context
      */
     public function __construct(
