@@ -14,6 +14,7 @@
         <section id="catalog">
             <group id="popular_search_terms" translate="label" type="text" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Popular Search Terms</label>
+                <resource>Amadeco_PopularSearchTerms::config</resource>
                 <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Module</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -33,11 +34,6 @@
                     <label>Time Period (days)</label>
                     <validate>validate-number validate-greater-than-zero</validate>
                     <comment>Number of days to look back for search terms</comment>
-                </field>
-                <field id="cache_lifetime" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Cache Lifetime (seconds)</label>
-                    <validate>validate-number validate-greater-than-zero</validate>
-                    <comment>Time in seconds to cache the search terms data</comment>
                 </field>
             </group>
         </section>
