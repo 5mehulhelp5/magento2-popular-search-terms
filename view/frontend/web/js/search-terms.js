@@ -3,7 +3,7 @@
  *
  * @category   Amadeco
  * @package    Amadeco_PopularSearchTerms
- * @author     Senior PHP Developer
+ * @author     Ilan Parmentier
  */
 define([
     'jquery',
