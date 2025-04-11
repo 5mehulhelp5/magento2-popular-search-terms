@@ -3,7 +3,7 @@
     "description": "Magento 2 module to display popular search terms based on frequency or recency",
     "type": "magento2-module",
     "version": "1.0.1",
-    "license": "MIT",
+    "license": "OSL-3.0",
     "authors": [
         {
             "name": "Ilan Parmentier @ Amadeco",
