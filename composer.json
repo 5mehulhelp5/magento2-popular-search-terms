@@ -1,16 +1,21 @@
 {
     "name": "amadeco/module-popular-search-terms",
-    "description": "Magento 2 module to display popular search terms based on frequency or recency",
     "type": "magento2-module",
-    "version": "1.0.1",
-    "license": "OSL-3.0",
+    "license": [
+        "OSL-3.0"
+    ],
+    "description": "Magento 2 module to display popular search terms based on frequency or recency",
     "authors": [
         {
-            "name": "Ilan Parmentier @ Amadeco",
-            "email": "dev@amadeco.fr",
-            "homepage": "https://www.amadeco.fr",
-            "role": "Developer"
+            "name": "Ilan Parmentier",
+            "email": "dev@amadeco.fr"
         }
+    ],
+    "keywords": [
+        "magento",
+        "magento2",
+        "search",
+        "ux"
     ],
     "require": {
         "php": "~8.1|~8.2|~8.3",
