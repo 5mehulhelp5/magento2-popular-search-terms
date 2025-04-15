@@ -4,7 +4,7 @@
     "license": [
         "OSL-3.0"
     ],
-    "description": "Magento 2 module to display popular search terms based on frequency or recency",
+    "description": "Magento 2 module to display popular search terms based on frequency or recency.",
     "authors": [
         {
             "name": "Ilan Parmentier",
