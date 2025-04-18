@@ -3,7 +3,7 @@
 [![Latest Stable Version](https://img.shields.io/github/v/release/Amadeco/magento2-popular-search-terms)](https://github.com/Amadeco/magento2-popular-search-terms/releases)
 [![License](https://img.shields.io/github/license/Amadeco/magento2-popular-search-terms)](https://github.com/Amadeco/magento2-popular-search-terms/blob/main/LICENSE)
 [![Magento](https://img.shields.io/badge/Magento-2.4.x-brightgreen.svg)](https://magento.com)
-[![PHP](https://img.shields.io/badge/PHP-8.1|8.2|8.3-blue.svg)](https://www.php.net)
+[![PHP](https://img.shields.io/badge/PHP-8.3+-blue.svg)](https://www.php.net)
 
 [SPONSOR: Amadeco](https://www.amadeco.fr)
 
@@ -27,7 +27,7 @@ This professional module for Magento 2 enhances the search experience by combini
 ## Requirements
 
 - Magento 2.4.x
-- PHP 8.1, 8.2, or 8.3
+- PHP 8.3+
 
 ## Installation
 
