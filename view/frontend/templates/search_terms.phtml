@@ -8,11 +8,13 @@
  */
 
 use Amadeco\PopularSearchTerms\ViewModel\SearchTerms;
+use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 /**
  * @var Template $block
+ * @var Escaper $escaper
  * @var SecureHtmlRenderer $secureRenderer
  * @var SearchTerms $viewModel
  */
@@ -23,11 +25,10 @@ $viewModel = $block->getData('view_model');
 <?php if ($viewModel && $viewModel->isEnabled()): ?>
     <div class="block block-search-terms">
         <div class="block-title">
-            <strong role="heading" aria-level="2"><?= $block->escapeHtml(__('Search Terms')) ?></strong>
+            <strong role="heading" aria-level="2"><?= $escaper->escapeHtml(__('Search Terms')) ?></strong>
         </div>
         <div class="block-content">
-            <div id="amadeco-search-terms" data-bind="scope: 'search-terms'" class="amadeco-search-terms">
-                </div>
+            <div id="amadeco-search-terms" data-bind="scope: 'search-terms'" class="amadeco-search-terms"></div>
         </div>
     </div>
 
