@@ -8,16 +8,15 @@
  */
 declare(strict_types=1);
 
-namespace Amadeco\PopularSearchTerms\Helper;
+namespace Amadeco\PopularSearchTerms\Model;
 
-use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Framework\App\Helper\Context;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 
 /**
- * Configuration helper for Popular Search Terms
+ * Configuration Model for Popular Search Terms
  */
-class Config extends AbstractHelper
+class Config
 {
     /**
      * XML path for enabled config
@@ -30,6 +29,11 @@ class Config extends AbstractHelper
     public const XML_PATH_NUMBER_OF_TERMS = 'catalog/popular_search_terms/number_of_terms';
 
     /**
+     * XML path for max recent searches config
+     */
+    public const XML_PATH_MAX_RECENT_SEARCHES = 'catalog/popular_search_terms/max_recent_searches';
+
+    /**
      * XML path for sort order config
      */
     public const XML_PATH_SORT_ORDER = 'catalog/popular_search_terms/sort_order';
@@ -40,13 +44,11 @@ class Config extends AbstractHelper
     public const XML_PATH_TIME_PERIOD = 'catalog/popular_search_terms/time_period';
 
     /**
-     * @param Context $context
+     * @param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
-        Context $context
-    ) {
-        parent::__construct($context);
-    }
+        private readonly ScopeConfigInterface $scopeConfig
+    ) {}
 
     /**
      * Check if module is enabled
@@ -73,6 +75,21 @@ class Config extends AbstractHelper
     {
         return (int)$this->scopeConfig->getValue(
             self::XML_PATH_NUMBER_OF_TERMS,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+    }
+    
+    /**
+     * Get max recent searches allowed
+     *
+     * @param int|null $storeId
+     * @return int
+     */
+    public function getMaxRecentSearches(?int $storeId = null): int
+    {
+        return (int)$this->scopeConfig->getValue(
+            self::XML_PATH_MAX_RECENT_SEARCHES,
             ScopeInterface::SCOPE_STORE,
             $storeId
         );

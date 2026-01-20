@@ -7,21 +7,27 @@
  * @author     Ilan Parmentier
  */
 
+use Amadeco\PopularSearchTerms\ViewModel\SearchTerms;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+
 /**
- * @var \Amadeco\PopularSearchTerms\Block\SearchTerms $block
- * @var \Magento\Framework\Escaper $escaper
- * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
+ * @var Template $block
+ * @var SecureHtmlRenderer $secureRenderer
+ * @var SearchTerms $viewModel
  */
+
+// Retrieve ViewModel
+$viewModel = $block->getData('view_model');
 ?>
-<?php if ($block->isEnabled()): ?>
+<?php if ($viewModel && $viewModel->isEnabled()): ?>
     <div class="block block-search-terms">
         <div class="block-title">
-            <strong role="heading" aria-level="2"><?= $escaper->escapeHtml(__('Search Terms')) ?></strong>
+            <strong role="heading" aria-level="2"><?= $block->escapeHtml(__('Search Terms')) ?></strong>
         </div>
         <div class="block-content">
             <div id="amadeco-search-terms" data-bind="scope: 'search-terms'" class="amadeco-search-terms">
-                <!-- ko template: getTemplate() --><!-- /ko -->
-            </div>
+                </div>
         </div>
     </div>
 
@@ -33,10 +39,25 @@
     }
     </script>
 
-    <?php $jsonConfig = /* @noEscape */ $block->getSerializedSearchTermsConfig();
+    <?php
+    // Retrieve configuration from Block Arguments (XML) or Defaults
+    $maxRecent = $block->getData('max_recent_searches');
+    $numTerms = $block->getData('number_of_terms');
+    $formId = $block->getData('search_form_id');
+    $inputName = $block->getData('search_input_name');
+    $storageKey = $block->getData('storage_key');
+    
+    $jsonConfig = /* @noEscape */ $viewModel->getSerializedSearchTermsConfig(
+        $maxRecent,
+        $numTerms,
+        $formId, 
+        $inputName, 
+        $storageKey
+    );
+    
     $scriptString = <<<script
         window.searchTermsConfig = {$jsonConfig};
-    script;
+script;
     ?>
     <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false); ?>
 <?php endif; ?>
