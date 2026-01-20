@@ -23,7 +23,7 @@ use Magento\Framework\View\Helper\SecureHtmlRenderer;
 $viewModel = $block->getData('view_model');
 ?>
 <?php if ($viewModel && $viewModel->isEnabled()): ?>
-    <div class="block block-search-terms">
+    <div class="block block-search-terms <?= $escaper->escapeHtmlAttr($block->getCssClass() ?? '') ?>">
         <div class="block-title">
             <strong role="heading" aria-level="2"><?= $escaper->escapeHtml(__('Search Terms')) ?></strong>
         </div>
