@@ -4,6 +4,8 @@
  * @category   Amadeco
  * @package    Amadeco_PopularSearchTerms
  * @author     Ilan Parmentier
+ * @copyright  Copyright (c) Amadeco (https://www.amadeco.fr)
+ * @license    OSL-3.0
  */
 define([
     'jquery',
@@ -14,8 +16,69 @@ define([
 ], function ($, ko, Component, $t, storageModel) {
     'use strict';
 
+    /**
+     * Search Terms UI Component
+     *
+     * This component manages the display of popular search terms (injected via SSR)
+     * and the user's recent search history (stored in LocalStorage).
+     *
+     * @api
+     */
     return Component.extend({
-        /** @inheritdoc */
+        /**
+         * Component configuration defaults.
+         * These values map 1-to-1 with the array returned by the PHP ViewModel:
+         * \Amadeco\PopularSearchTerms\ViewModel\SearchTerms::getSearchTermsConfig
+         */
+        defaults: {
+            template: 'Amadeco_PopularSearchTerms/search-terms-template',
+            
+            /**
+             * @type {Array} List of popular terms injected from server (SSR)
+             */
+            initialTerms: [],
+
+            /**
+             * @type {Number} Number of terms to display
+             */
+            numberOfTerms: 5,
+
+            /**
+             * @type {String} Sorting method ('popularity' or 'recency')
+             */
+            sortOrder: 'popularity',
+
+            /**
+             * @type {String} Base URL for the search result page
+             */
+            searchResultUrl: '',
+
+            /**
+             * @type {Number} Maximum number of recent searches to retain in history
+             */
+            maxRecentSearches: 5,
+
+            /**
+             * @type {Object} Configuration for the target search form elements
+             */
+            searchForm: {
+                /** @type {String} HTML ID of the search form */
+                formId: 'search_mini_form',
+                /** @type {String} Name attribute of the search input */
+                inputName: 'q',
+                /** @type {String} Key used for LocalStorage persistence */
+                storageKey: 'recent-searches'
+            }
+        },
+        
+        /**
+         * Initialize the component.
+         *
+         * Sets up observables using the injected configuration and initializes
+         * the storage model for tracking recent searches.
+         *
+         * @returns {Object} Chainable reference to this component
+         */
         initialize: function () {
             this._super();
 
@@ -104,34 +167,43 @@ define([
         },
 
         /**
-         * Load recent searches from storage
+         * Load recent searches from the Storage Model into the local observable.
+         *
+         * @public
+         * @return {void}
          */
         loadRecentSearches: function() {
             this.recentSearches(storageModel.getRecentSearches());
         },
 
         /**
-         * Clear recent searches
+         * Clear all recent searches from LocalStorage and update the UI.
+         *
+         * @public
+         * @return {void}
          */
         clearRecentSearches: function() {
             storageModel.clearRecentSearches();
         },
 
         /**
-         * Get search URL for term
+         * Generate the full search result URL for a specific term.
+         * Uses the 'searchResultUrl' injected via configuration.
          *
-         * @param {String} term
-         * @return {String}
+         * @public
+         * @param {String} term - The search query text
+         * @return {String} The complete URL (e.g., "/catalogsearch/result/?q=term")
          */
         getSearchUrl: function (term) {
             return window.searchTermsConfig.searchResultUrl + '?q=' + encodeURIComponent(term);
         },
 
         /**
-         * Format date for display
+         * Format a Unix timestamp into a localized date string.
          *
-         * @param {Number} timestamp
-         * @return {String}
+         * @public
+         * @param {Number} timestamp - Unix timestamp in milliseconds
+         * @return {String} Localized date string or empty string if invalid
          */
         formatDate: function(timestamp) {
             if (!timestamp) {
