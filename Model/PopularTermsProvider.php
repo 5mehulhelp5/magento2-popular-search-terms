@@ -56,9 +56,6 @@ class PopularTermsProvider implements PopularTermsProviderInterface
         /** @var QueryCollection $collection */
         $collection = $this->queryCollectionFactory->create();
 
-        // Native method to configure collection for popularity
-        $collection->setPopularQueryFilter($storeId);
-
         // Apply time period filter if configured
         $timePeriod = $this->config->getTimePeriod($storeId);
         if ($timePeriod > 0) {
@@ -72,6 +69,8 @@ class PopularTermsProvider implements PopularTermsProviderInterface
         // Apply sort order
         if ($this->config->getSortOrder($storeId) === SortOrder::SORT_BY_RECENCY) {
             $collection->setRecentQueryFilter();
+        } else {
+            $collection->setPopularQueryFilter($storeId); 
         }
 
         // Determine limit: Use override if present, otherwise config
