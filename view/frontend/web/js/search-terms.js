@@ -12,8 +12,9 @@ define([
     'ko',
     'uiComponent',
     'mage/translate',
+    'mage/storage',
     'Amadeco_PopularSearchTerms/js/model/storage'
-], function ($, ko, Component, $t, storageModel) {
+], function ($, ko, Component, $t, storage, storageModel) {
     'use strict';
 
     /**
@@ -33,6 +34,7 @@ define([
         defaults: {
             template: 'Amadeco_PopularSearchTerms/search-terms-template',
             initialTerms: [],
+            ajaxUrl: '',
             numberOfTerms: 5,
             sortOrder: 'popularity',
             searchResultUrl: '',
@@ -69,8 +71,13 @@ define([
 
             // 3. Load initial data
             this.loadRecentSearches();
+            
+            // 4. AJAX Loading Trigger
+            if (this.ajaxUrl && this.terms().length === 0) {
+                this.fetchTerms();
+            }
 
-            // 4. Global Event Listener for history updates
+            // 5. Global Event Listener for history updates
             $(document).on('recentSearchesUpdated', function (event, searches) {
                 this.recentSearches(searches);
             }.bind(this));
@@ -96,6 +103,31 @@ define([
          */
         clearRecentSearches: function () {
             storageModel.clearRecentSearches();
+        },
+
+        /**
+         * Fetch terms via AJAX
+         */
+        fetchTerms: function () {
+            var self = this;
+            this.loading(true);
+            this.error(false);
+
+            storage.get(
+                this.ajaxUrl
+            ).done(function (response) {
+                if (response.success && response.terms) {
+                    self.terms(response.terms);
+                } else {
+                    self.error(true);
+                    self.errorMessage(response.message || $t('Error loading terms'));
+                }
+            }).fail(function () {
+                self.error(true);
+                self.errorMessage($t('Connection error'));
+            }).always(function () {
+                self.loading(false);
+            });
         },
 
         /**
