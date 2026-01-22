@@ -1,11 +1,11 @@
 /**
  * Amadeco PopularSearchTerms Module
  *
- * @category   Amadeco
- * @package    Amadeco_PopularSearchTerms
- * @author     Ilan Parmentier
- * @copyright  Copyright (c) Amadeco (https://www.amadeco.fr)
- * @license    OSL-3.0
+ * @category    Amadeco
+ * @package     Amadeco_PopularSearchTerms
+ * @author      Ilan Parmentier
+ * @copyright   Copyright (c) Amadeco (https://www.amadeco.fr)
+ * @license     OSL-3.0
  */
 define([
     'jquery',
@@ -19,199 +19,110 @@ define([
     /**
      * Search Terms UI Component
      *
-     * This component manages the display of popular search terms (injected via SSR)
-     * and the user's recent search history (stored in LocalStorage).
+     * This component manages popular search terms provided by the server 
+     * and user search history persisted in LocalStorage.
      *
      * @api
      */
     return Component.extend({
         /**
          * Component configuration defaults.
-         * These values map 1-to-1 with the array returned by the PHP ViewModel:
-         * \Amadeco\PopularSearchTerms\ViewModel\SearchTerms::getSearchTermsConfig
+         * These values are automatically overridden by the 'config' array 
+         * injected by Amadeco\PopularSearchTerms\Block\SearchTerms::getJsLayout.
          */
         defaults: {
             template: 'Amadeco_PopularSearchTerms/search-terms-template',
-            
-            /**
-             * @type {Array} List of popular terms injected from server (SSR)
-             */
             initialTerms: [],
-
-            /**
-             * @type {Number} Number of terms to display
-             */
             numberOfTerms: 5,
-
-            /**
-             * @type {String} Sorting method ('popularity' or 'recency')
-             */
             sortOrder: 'popularity',
-
-            /**
-             * @type {String} Base URL for the search result page
-             */
             searchResultUrl: '',
-
-            /**
-             * @type {Number} Maximum number of recent searches to retain in history
-             */
             maxRecentSearches: 5,
-
-            /**
-             * @type {Object} Configuration for the target search form elements
-             */
             searchForm: {
-                /** @type {String} HTML ID of the search form */
                 formId: 'search_mini_form',
-                /** @type {String} Name attribute of the search input */
                 inputName: 'q',
-                /** @type {String} Key used for LocalStorage persistence */
                 storageKey: 'recent-searches'
             }
         },
-        
+
         /**
-         * Initialize the component.
+         * Initialize the UI Component.
          *
-         * Sets up observables using the injected configuration and initializes
-         * the storage model for tracking recent searches.
-         *
-         * @returns {Object} Chainable reference to this component
+         * @returns {Object} Chainable reference
          */
         initialize: function () {
             this._super();
 
-            // Initialize observable data for popular terms
-            this.terms = ko.observableArray([]);
-            this.loading = ko.observable(true);
-            this.error = ko.observable(false);
-            this.errorMessage = ko.observable('');
-
-            // Initialize observable data for recent searches
+            // 1. Initialize Observables
+            this.terms = ko.observableArray(this.initialTerms);
             this.recentSearches = ko.observableArray([]);
-            this.hasRecentSearches = ko.computed(function() {
+            this.loading = ko.observable(false);
+            
+            this.hasRecentSearches = ko.pureComputed(function () {
                 return this.recentSearches().length > 0;
             }, this);
 
-            // Get configuration parameters
-            this.maxRecentSearches = this.getMaxRecentSearches();
-            this.storageConfig = this.getStorageConfig();
+            // 2. Initialize Persistence Model
+            // Values like this.searchForm and this.maxRecentSearches are now 
+            // natively available thanks to the Block injection.
+            storageModel.initialize(this.searchForm);
+            storageModel.initSearchObserver(parseInt(this.maxRecentSearches, 10));
 
-            // Initialize the storage model with configuration
-            storageModel.initialize(this.storageConfig);
-            storageModel.initSearchObserver(this.maxRecentSearches);
-
-            // Load data (Performance Fix: Load from injected config, no AJAX)
-            this.initPopularTerms();
+            // 3. Load initial data
             this.loadRecentSearches();
 
-            // Listen for updated recent searches
-            var self = this;
-            $(document).on('recentSearchesUpdated', function(event, searches) {
-                self.recentSearches(searches);
-            });
+            // 4. Global Event Listener for history updates
+            $(document).on('recentSearchesUpdated', function (event, searches) {
+                this.recentSearches(searches);
+            }.bind(this));
+
+            return this;
         },
 
         /**
-         * Initialize popular terms from window config
-         */
-        initPopularTerms: function () {
-            // Check if terms are provided in the config (Server-Side Rendered)
-            if (window.searchTermsConfig && window.searchTermsConfig.initialTerms) {
-                this.terms(window.searchTermsConfig.initialTerms);
-                this.loading(false);
-            } else {
-                // Fallback if no terms are found or module disabled
-                this.loading(false);
-                // Optional: We could set an empty state or error here if strict
-            }
-        },
-
-        /**
-         * Get maximum number of recent searches from config
-         *
-         * @returns {number}
-         */
-        getMaxRecentSearches: function() {
-            return window.searchTermsConfig && window.searchTermsConfig.maxRecentSearches
-                ? parseInt(window.searchTermsConfig.maxRecentSearches, 10)
-                : 5;
-        },
-
-        /**
-         * Get storage configuration
-         *
-         * @returns {Object}
-         */
-        getStorageConfig: function() {
-            var config = {};
-
-            if (window.searchTermsConfig && window.searchTermsConfig.searchForm) {
-                var searchForm = window.searchTermsConfig.searchForm;
-
-                if (searchForm.formId) {
-                    config.formId = searchForm.formId;
-                }
-
-                if (searchForm.inputName) {
-                    config.inputName = searchForm.inputName;
-                }
-
-                if (searchForm.storageKey) {
-                    config.storageKey = searchForm.storageKey;
-                }
-            }
-
-            return config;
-        },
-
-        /**
-         * Load recent searches from the Storage Model into the local observable.
+         * Loads history from LocalStorage via the storage model.
          *
          * @public
-         * @return {void}
+         * @returns {void}
          */
-        loadRecentSearches: function() {
+        loadRecentSearches: function () {
             this.recentSearches(storageModel.getRecentSearches());
         },
 
         /**
-         * Clear all recent searches from LocalStorage and update the UI.
+         * Clears search history.
          *
          * @public
-         * @return {void}
+         * @returns {void}
          */
-        clearRecentSearches: function() {
+        clearRecentSearches: function () {
             storageModel.clearRecentSearches();
         },
 
         /**
-         * Generate the full search result URL for a specific term.
-         * Uses the 'searchResultUrl' injected via configuration.
+         * Generates the search URL for a given term.
          *
          * @public
-         * @param {String} term - The search query text
-         * @return {String} The complete URL (e.g., "/catalogsearch/result/?q=term")
+         * @param {String} term
+         * @returns {String}
          */
         getSearchUrl: function (term) {
-            return window.searchTermsConfig.searchResultUrl + '?q=' + encodeURIComponent(term);
+            var separator = this.searchResultUrl.indexOf('?') !== -1 ? '&' : '?';
+            return this.searchResultUrl + separator + 'q=' + encodeURIComponent(term);
         },
 
         /**
-         * Format a Unix timestamp into a localized date string.
+         * Formats a raw date string or timestamp into a localized string.
          *
          * @public
-         * @param {Number} timestamp - Unix timestamp in milliseconds
-         * @return {String} Localized date string or empty string if invalid
+         * @param {String|Number} dateValue
+         * @returns {String}
          */
-        formatDate: function(timestamp) {
-            if (!timestamp) {
+        formatDate: function (dateValue) {
+            if (!dateValue) {
                 return '';
             }
-
-            var date = new Date(timestamp);
-            return date.toLocaleDateString();
+            var date = new Date(dateValue);
+            return !isNaN(date.getTime()) ? date.toLocaleDateString() : '';
         }
     });
 });
