@@ -5,6 +5,7 @@
  * @category    Amadeco
  * @package     Amadeco_PopularSearchTerms
  * @author      Ilan Parmentier
+ * @license     Proprietary
  */
 
 declare(strict_types=1);
@@ -16,21 +17,23 @@ use Amadeco\PopularSearchTerms\Model\Config;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Magento\Search\Model\QueryFactory;
 
 /**
- * Block class for Search Terms UI Component.
+ * Block for Popular Search Terms UI Component.
  *
- * Handles the merging of XML arguments and system configuration into 
- * the JsLayout object for KnockoutJS initialization.
+ * This block enriches the static JsLayout configuration defined in XML with 
+ * dynamic search terms and store-specific URLs.
+ * * Design Principles:
+ * - SOLID: Single responsibility of preparing UI data.
+ * - KISS: Direct manipulation of the jsLayout array.
+ * - DRY: Centralized limit resolution logic.
  */
 class SearchTerms extends Template
 {
     /**
-     * Constants for default values to ensure KISS/DRY.
+     * Default number of terms if none provided in XML or System Config.
      */
-    private const DEFAULT_STORAGE_KEY = 'recent-searches';
-    private const DEFAULT_FORM_ID = 'search_mini_form';
+    private const DEFAULT_TERMS_LIMIT = 5;
 
     /**
      * @param Context $context
@@ -50,39 +53,34 @@ class SearchTerms extends Template
     }
 
     /**
-     * Override _toHtml to prevent rendering if disabled
+     * Enriches the JsLayout 'config' with dynamic search data.
      *
-     * @return string
-     */
-    protected function _toHtml(): string
-    {
-        if (!$this->isEnabled()) {
-            return '';
-        }
-        return parent::_toHtml();
-    }
-
-    /**
-     * Intercepts JsLayout to inject dynamic configuration before rendering.
+     * Injects:
+     * - initialTerms: The list of popular terms from the provider.
+     * - searchResultUrl: The base URL for catalog search results.
      *
-     * @return string
+     * @return string JSON serialized layout configuration.
      */
     public function getJsLayout(): string
     {
         $layout = $this->serializer->unserialize(parent::getJsLayout());
-
+        
         if (isset($layout['components']['search-terms'])) {
-            $layout['components']['search-terms']['config'] = array_merge(
-                $layout['components']['search-terms']['config'] ?? [],
-                $this->getDynamicConfiguration()
-            );
+            $component = &$layout['components']['search-terms'];
+            $config = $component['config'] ?? [];
+
+            // Merge dynamic data into existing XML config
+            $component['config'] = array_merge($config, [
+                'initialTerms' => $this->fetchPopularTerms((int)($config['number_of_terms'] ?? 0)),
+                'searchResultUrl' => $this->_urlBuilder->getUrl('catalogsearch/result/')
+            ]);
         }
 
         return (string)$this->serializer->serialize($layout);
     }
 
     /**
-     * Check if the block functionality is enabled in system config.
+     * Checks if the module functionality is enabled globally.
      *
      * @return bool
      */
@@ -92,32 +90,34 @@ class SearchTerms extends Template
     }
 
     /**
-     * Resolves and compiles configuration from XML arguments and Providers.
+     * Prevents block rendering if the module is disabled.
      *
-     * @return array<string, mixed>
+     * @return string
      */
-    private function getDynamicConfiguration(): array
+    protected function _toHtml(): string
     {
-        return [
-            'initialTerms'      => $this->getPopularTermsData(),
-            'searchResultUrl'   => $this->_urlBuilder->getUrl('catalogsearch/result/'),
-            'maxRecentSearches' => (int)($this->getData('max_recent_searches') ?: $this->config->getMaxRecentSearches()),
-            'searchForm' => [
-                'formId'     => $this->getData('search_form_id') ?: self::DEFAULT_FORM_ID,
-                'inputName'  => $this->getData('search_input_name') ?: QueryFactory::QUERY_VAR_NAME,
-                'storageKey' => $this->getData('storage_key') ?: self::DEFAULT_STORAGE_KEY,
-            ]
-        ];
+        if (!$this->isEnabled()) {
+            return '';
+        }
+
+        return parent::_toHtml();
     }
 
     /**
-     * Fetches popular terms based on the 'number_of_terms' argument.
+     * Resolves the terms limit and fetches data from the provider.
      *
-     * @return array
+     * Priority: XML Argument > System Config > Default Constant.
+     *
+     * @param int $xmlLimit Limit provided in the jsLayout/config XML.
+     * @return array Array of search terms data.
      */
-    private function getPopularTermsData(): array
+    private function fetchPopularTerms(int $xmlLimit): array
     {
-        $limit = (int)($this->getData('number_of_terms') ?: $this->config->getNumberOfTerms());
-        return $this->popularTermsProvider->getPopularTerms(null, $limit);
+        $limit = $xmlLimit ?: $this->config->getNumberOfTerms() ?: self::DEFAULT_TERMS_LIMIT;
+
+        return $this->popularTermsProvider->getPopularTerms(
+            null, 
+            (int)$limit
+        );
     }
 }
