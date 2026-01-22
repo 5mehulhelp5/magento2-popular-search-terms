@@ -17,7 +17,9 @@
         <strong role="heading" aria-level="2"><?= $escaper->escapeHtml(__('Search Terms')) ?></strong>
     </div>
     <div class="block-content">
-        <div id="amadeco-search-terms" data-bind="scope: 'search-terms'" class="amadeco-search-terms"></div>
+        <div id="amadeco-search-terms" data-bind="scope: 'search-terms'" class="amadeco-search-terms">
+            <!-- ko template: getTemplate() --><!-- /ko -->
+        </div>
     </div>
 </div>
 
