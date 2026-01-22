@@ -49,6 +49,11 @@ class Config
     public const XML_PATH_TIME_PERIOD = 'catalog/popular_search_terms/time_period';
 
     /**
+     * XML path for cache lifetime config
+     */
+    public const XML_PATH_CACHE_LIFETIME = 'catalog/popular_search_terms/cache_lifetime';
+
+    /**
      * @param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
