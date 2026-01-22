@@ -12,13 +12,25 @@ namespace Amadeco\PopularSearchTerms\Model\Config\Source;
 
 use Magento\Framework\Data\OptionSourceInterface;
 
+/**
+ * Load Method Source Model
+ */
 class LoadMethod implements OptionSourceInterface
 {
+    /**
+     * Load by direct injection
+     */
     public const LOADING_DIRECT = 'direct';
+
+    /**
+     * Load by AJAX Controller search terms block
+     */
     public const LOADING_AJAX = 'ajax';
 
     /**
-     * @return array[]
+     * Get options array
+     *
+     * @return array
      */
     public function toOptionArray(): array
     {
