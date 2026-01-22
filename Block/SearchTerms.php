@@ -50,6 +50,19 @@ class SearchTerms extends Template
     }
 
     /**
+     * Override _toHtml to prevent rendering if disabled
+     *
+     * @return string
+     */
+    protected function _toHtml(): string
+    {
+        if (!$this->isEnabled()) {
+            return '';
+        }
+        return parent::_toHtml();
+    }
+
+    /**
      * Intercepts JsLayout to inject dynamic configuration before rendering.
      *
      * @return string
