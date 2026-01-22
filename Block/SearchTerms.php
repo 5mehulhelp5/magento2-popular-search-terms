@@ -14,6 +14,7 @@ namespace Amadeco\PopularSearchTerms\Block;
 
 use Amadeco\PopularSearchTerms\Api\PopularTermsProviderInterface;
 use Amadeco\PopularSearchTerms\Model\Config;
+use Amadeco\PopularSearchTerms\Model\Config\Source\LoadMethod;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\View\Element\Template;
@@ -116,8 +117,7 @@ class SearchTerms extends Template implements IdentityInterface
         if (!$this->isEnabled()) {
             return '';
         }
-
-        return parent::_toHtml();
+        return $html;
     }
 
     /**
@@ -148,11 +148,11 @@ class SearchTerms extends Template implements IdentityInterface
         if (!$this->isEnabled()) {
             return parent::getCacheLifetime();
         }
-        
+
         $lifetime = $this->config->getCacheLifetime();
         return $lifetime ?? 3600;
     }
-    
+
     /**
      * Return identifiers for produced content
      *
@@ -178,7 +178,7 @@ class SearchTerms extends Template implements IdentityInterface
                 $this->config->getNumberOfTerms(),
                 $this->config->getSortOrder(),
                 $this->config->getTimePeriod(),
-                $this->config->getCacheLifetime() 
+                $this->config->getCacheLifetime()
             ]
         );
     }
