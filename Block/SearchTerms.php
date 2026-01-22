@@ -18,7 +18,6 @@ use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Magento\Search\Model\Query;
 
 /**
  * Block for Popular Search Terms UI Component.
@@ -140,13 +139,47 @@ class SearchTerms extends Template implements IdentityInterface
     }
 
     /**
+     * Get cache lifetime
+     *
+     * @return int|null
+     */
+    protected function getCacheLifetime()
+    {
+        if (!$this->isEnabled()) {
+            return parent::getCacheLifetime();
+        }
+        
+        $lifetime = $this->config->getCacheLifetime();
+        return $lifetime ?? 3600;
+    }
+    
+    /**
      * Return identifiers for produced content
      *
-     * @return string[]
+     * @return array
      */
     public function getIdentities(): array
     {
-        // This ensures the block clears if Search Terms are updated
-        return [Query::CACHE_TAG];
+        return [];
+    }
+
+    /**
+     * Get cache key informative items
+     *
+     * @return array
+     */
+    public function getCacheKeyInfo(): array
+    {
+        return array_merge(
+            parent::getCacheKeyInfo(),
+            [
+                $this->_storeManager->getStore()->getId(),
+                $this->config->getLoadMethod(),
+                $this->config->getNumberOfTerms(),
+                $this->config->getSortOrder(),
+                $this->config->getTimePeriod(),
+                $this->config->getCacheLifetime() 
+            ]
+        );
     }
 }
