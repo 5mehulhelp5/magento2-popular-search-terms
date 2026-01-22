@@ -106,13 +106,6 @@ The module is now deeply integrated with Magento's `jsLayout` system. You can ov
 </referenceContainer>
 ```
 
-Effectivement, l'exemple XML précédent mélangeait l'ancienne logique (arguments directs) et la nouvelle (intégration profonde `jsLayout`). Dans la version actuelle de la branche **main**, tout passe par la configuration du composant UI au sein du `jsLayout`.
-
-Voici la correction pour la première étape, suivie de la deuxième étape demandée.
-
-### Première étape : README.md (Section Customization corrigée)
-
-```markdown
 ## Customization
 
 ### XML Layout
