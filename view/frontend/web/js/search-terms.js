@@ -57,6 +57,8 @@ define([
             // 1. Initialize Observables
             this.terms = ko.observableArray(this.initialTerms);
             this.recentSearches = ko.observableArray([]);
+            this.error = ko.observable(false);
+            this.errorMessage = ko.observable('');
             this.loading = ko.observable(false);
             
             this.hasRecentSearches = ko.pureComputed(function () {
