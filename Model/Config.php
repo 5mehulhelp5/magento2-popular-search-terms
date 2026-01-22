@@ -24,6 +24,11 @@ class Config
     public const XML_PATH_ENABLED = 'catalog/popular_search_terms/enabled';
 
     /**
+     * XML path for loading type config
+     */
+    public const XML_PATH_LOAD_METHOD = 'catalog/popular_search_terms/load_method';
+
+    /**
      * XML path for number of terms config
      */
     public const XML_PATH_NUMBER_OF_TERMS = 'catalog/popular_search_terms/number_of_terms';
@@ -60,6 +65,21 @@ class Config
     {
         return $this->scopeConfig->isSetFlag(
             self::XML_PATH_ENABLED,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+    }
+
+    /**
+     * Get data loading method
+     *
+     * @param int|null $storeId
+     * @return string
+     */
+    public function getLoadMethod(?int $storeId = null): string
+    {
+        return (string)$this->scopeConfig->getValue(
+            self::XML_PATH_LOAD_METHOD,
             ScopeInterface::SCOPE_STORE,
             $storeId
         );
