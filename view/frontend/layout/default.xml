@@ -3,19 +3,22 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="sidebar.additional">
-            <block class="Magento\Framework\View\Element\Template"
+            <block class="Amadeco\PopularSearchTerms\Block\SearchTerms"
                    name="amadeco.popular.search.terms"
                    template="Amadeco_PopularSearchTerms::search_terms.phtml"
                    ifconfig="catalog/popular_search_terms/enabled">
                 <arguments>
-                    <argument name="view_model" xsi:type="object">Amadeco\PopularSearchTerms\ViewModel\SearchTerms</argument>
-                    <argument name="max_recent_searches" xsi:type="number">5</argument>
                     <argument name="jsLayout" xsi:type="array">
                         <item name="components" xsi:type="array">
                             <item name="search-terms" xsi:type="array">
                                 <item name="component" xsi:type="string">Amadeco_PopularSearchTerms/js/search-terms</item>
                                 <item name="config" xsi:type="array">
                                     <item name="template" xsi:type="string">Amadeco_PopularSearchTerms/search-terms-template</item>
+                                    <item name="max_recent_searches" xsi:type="number">5</item>
+                                    <item name="number_of_terms" xsi:type="number">10</item>
+                                    <item name="search_form_id" xsi:type="string">minisearch-form-top-search</item>
+                                    <item name="search_input_name" xsi:type="string">q</item>
+                                    <item name="storage_key" xsi:type="string">recent-searches</item>
                                 </item>
                             </item>
                         </item>
