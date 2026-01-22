@@ -7,58 +7,27 @@
  * @author     Ilan Parmentier
  */
 
-use Amadeco\PopularSearchTerms\ViewModel\SearchTerms;
+use Amadeco\PopularSearchTerms\Block\SearchTerms;
 use Magento\Framework\Escaper;
-use Magento\Framework\View\Element\Template;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 /**
- * @var Template $block
+ * @var SearchTerms $block
  * @var Escaper $escaper
- * @var SecureHtmlRenderer $secureRenderer
- * @var SearchTerms $viewModel
  */
-
-// Retrieve ViewModel
-$viewModel = $block->getData('view_model');
 ?>
-<?php if ($viewModel && $viewModel->isEnabled()): ?>
-    <div class="block block-search-terms <?= $escaper->escapeHtmlAttr($block->getCssClass() ?? '') ?>">
-        <div class="block-title">
-            <strong role="heading" aria-level="2"><?= $escaper->escapeHtml(__('Search Terms')) ?></strong>
-        </div>
-        <div class="block-content">
-            <div id="amadeco-search-terms" data-bind="scope: 'search-terms'" class="amadeco-search-terms"></div>
-        </div>
+<div class="block block-search-terms <?= $escaper->escapeHtmlAttr($block->getCssClass() ?? '') ?>">
+    <div class="block-title">
+        <strong role="heading" aria-level="2"><?= $escaper->escapeHtml(__('Search Terms')) ?></strong>
     </div>
+    <div class="block-content">
+        <div id="amadeco-search-terms" data-bind="scope: 'search-terms'" class="amadeco-search-terms"></div>
+    </div>
+</div>
 
-    <script type="text/x-magento-init">
-    {
-        "#amadeco-search-terms": {
-            "Magento_Ui/js/core/app": <?= /* @noEscape */ $block->getJsLayout() ?>
-        }
+<script type="text/x-magento-init">
+{
+    "#amadeco-search-terms": {
+        "Magento_Ui/js/core/app": <?= /* @noEscape */ $block->getJsLayout() ?>
     }
-    </script>
-
-    <?php
-    // Retrieve configuration from Block Arguments (XML) or Defaults
-    $maxRecent = $block->getData('max_recent_searches');
-    $numTerms = $block->getData('number_of_terms');
-    $formId = $block->getData('search_form_id');
-    $inputName = $block->getData('search_input_name');
-    $storageKey = $block->getData('storage_key');
-    
-    $jsonConfig = /* @noEscape */ $viewModel->getSerializedSearchTermsConfig(
-        $maxRecent,
-        $numTerms,
-        $formId, 
-        $inputName, 
-        $storageKey
-    );
-    
-    $scriptString = <<<script
-        window.searchTermsConfig = {$jsonConfig};
-script;
-    ?>
-    <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false); ?>
-<?php endif; ?>
+}
+</script>
