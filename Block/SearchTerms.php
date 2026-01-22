@@ -67,13 +67,30 @@ class SearchTerms extends Template implements IdentityInterface
             $component = &$layout['components']['search-terms'];
             $componentConfig = $component['config'] ?? [];
 
-            $xmlLimit = isset($componentConfig['number_of_terms'])
-                ? (int)$componentConfig['number_of_terms']
-                : null;
+            // Determine Loading Mode
+            $loadMethod = $this->config->getLoadMethod();
+            $isAjax = ($loadMethod === LoadMethod::LOADING_AJAX);
 
+            // Initialize variables
+            $initialTerms = [];
+            $ajaxUrl = '';
+
+            if ($isAjax) {
+                // AJAX Mode: Empty terms, Provide URL
+                $ajaxUrl = $this->getUrl('amadeco_popularterms/ajax/getterms');
+            } else {
+                // Direct Mode: Fetch terms, No URL
+                $xmlLimit = isset($componentConfig['number_of_terms'])
+                    ? (int)$componentConfig['number_of_terms']
+                    : null;
+                $initialTerms = $this->fetchPopularTerms($xmlLimit);
+            }
+
+            // Inject Configuration
             $component['config'] = array_merge($componentConfig, [
-                'initialTerms' => $this->fetchPopularTerms($xmlLimit),
-                'searchResultUrl' => $this->_urlBuilder->getUrl('catalogsearch/result/')
+                'initialTerms' => $initialTerms,
+                'ajaxUrl' => $ajaxUrl,
+                'searchResultUrl' => $this->getUrl('catalogsearch/result/')
             ]);
         }
 
