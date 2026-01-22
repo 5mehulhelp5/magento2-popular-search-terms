@@ -117,7 +117,7 @@ class SearchTerms extends Template implements IdentityInterface
         if (!$this->isEnabled()) {
             return '';
         }
-        return $html;
+        return parent::_toHtml();
     }
 
     /**
