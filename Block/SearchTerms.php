@@ -23,10 +23,6 @@ use Magento\Framework\View\Element\Template\Context;
  *
  * This block enriches the static JsLayout configuration defined in XML with 
  * dynamic search terms and store-specific URLs.
- * * Design Principles:
- * - SOLID: Single responsibility of preparing UI data.
- * - KISS: Direct manipulation of the jsLayout array.
- * - DRY: Centralized limit resolution logic.
  */
 class SearchTerms extends Template
 {
