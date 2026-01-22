@@ -14,10 +14,12 @@
         <catalog>
             <popular_search_terms>
                 <enabled>1</enabled>
+                <load_method>direct</load_method>
                 <number_of_terms>5</number_of_terms>
                 <max_recent_searches>5</max_recent_searches>
                 <sort_order>popularity</sort_order>
                 <time_period>30</time_period>
+                <cache_lifetime>3600</cache_lifetime>
             </popular_search_terms>
         </catalog>
     </default>
