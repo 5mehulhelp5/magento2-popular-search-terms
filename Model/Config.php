@@ -149,4 +149,20 @@ class Config
             $storeId
         );
     }
+
+    /**
+     * Get cache lifetime in seconds
+     *
+     * @param int|null $storeId
+     * @return int|null
+     */
+    public function getCacheLifetime(?int $storeId = null): ?int
+    {
+        $value = $this->scopeConfig->getValue(
+            self::XML_PATH_CACHE_LIFETIME,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+        return $value !== null ? (int)$value : null;
+    }
 }
