@@ -21,7 +21,7 @@ use Magento\Framework\View\Element\Template\Context;
 /**
  * Block for Popular Search Terms UI Component.
  *
- * This block enriches the static JsLayout configuration defined in XML with 
+ * This block enriches the static JsLayout configuration defined in XML with
  * dynamic search terms and store-specific URLs.
  */
 class SearchTerms extends Template
@@ -60,14 +60,17 @@ class SearchTerms extends Template
     public function getJsLayout(): string
     {
         $layout = $this->serializer->unserialize(parent::getJsLayout());
-        
+
         if (isset($layout['components']['search-terms'])) {
             $component = &$layout['components']['search-terms'];
-            $config = $component['config'] ?? [];
+            $componentConfig = $component['config'] ?? [];
 
-            // Merge dynamic data into existing XML config
-            $component['config'] = array_merge($config, [
-                'initialTerms' => $this->fetchPopularTerms((int)($config['number_of_terms'] ?? 0)),
+            $xmlLimit = isset($componentConfig['number_of_terms'])
+                ? (int)$componentConfig['number_of_terms']
+                : null;
+
+            $component['config'] = array_merge($componentConfig, [
+                'initialTerms' => $this->fetchPopularTerms($xmlLimit),
                 'searchResultUrl' => $this->_urlBuilder->getUrl('catalogsearch/result/')
             ]);
         }
@@ -104,15 +107,15 @@ class SearchTerms extends Template
      *
      * Priority: XML Argument > System Config > Default Constant.
      *
-     * @param int $xmlLimit Limit provided in the jsLayout/config XML.
+     * @param null|int $xmlLimit Limit provided in the jsLayout/config XML.
      * @return array Array of search terms data.
      */
-    private function fetchPopularTerms(int $xmlLimit): array
+    private function fetchPopularTerms(?int $xmlLimit = null): array
     {
         $limit = $xmlLimit ?: $this->config->getNumberOfTerms() ?: self::DEFAULT_TERMS_LIMIT;
 
         return $this->popularTermsProvider->getPopularTerms(
-            null, 
+            null,
             (int)$limit
         );
     }
