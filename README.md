@@ -106,40 +106,6 @@ The module is now deeply integrated with Magento's `jsLayout` system. You can ov
 </referenceContainer>
 ```
 
-## Customization
-
-### XML Layout
-
-The module is now deeply integrated with Magento's `jsLayout` system. You can override any configuration parameter directly in your layout XML:
-
-```xml
-<referenceContainer name="sidebar.additional">
-    <block class="Amadeco\PopularSearchTerms\Block\SearchTerms"
-           name="amadeco.popular.search.terms"
-           template="Amadeco_PopularSearchTerms::search_terms.phtml"
-           ifconfig="catalog/popular_search_terms/enabled">
-        <arguments>
-            <argument name="jsLayout" xsi:type="array">
-                <item name="components" xsi:type="array">
-                    <item name="search-terms" xsi:type="array">
-                        <item name="component" xsi:type="string">Amadeco_PopularSearchTerms/js/search-terms</item>
-                        <item name="config" xsi:type="array">
-                            <item name="template" xsi:type="string">Amadeco_PopularSearchTerms/search-terms-template</item>
-                            <item name="max_recent_searches" xsi:type="number">5</item>
-                            <item name="number_of_terms" xsi:type="number">10</item>
-                            <item name="search_form_id" xsi:type="string">search_mini_form</item>
-                            <item name="search_input_name" xsi:type="string">q</item>
-                            <item name="storage_key" xsi:type="string">recent-searches</item>
-                        </item>
-                    </item>
-                </item>
-            </argument>
-        </arguments>
-    </block>
-</referenceContainer>
-
-```
-
 ### Configuration Parameters
 
 These parameters are available within the `config` node of the `search-terms` component:
