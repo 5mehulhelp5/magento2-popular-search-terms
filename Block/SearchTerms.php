@@ -14,9 +14,11 @@ namespace Amadeco\PopularSearchTerms\Block;
 
 use Amadeco\PopularSearchTerms\Api\PopularTermsProviderInterface;
 use Amadeco\PopularSearchTerms\Model\Config;
+use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Search\Model\Query;
 
 /**
  * Block for Popular Search Terms UI Component.
@@ -24,7 +26,7 @@ use Magento\Framework\View\Element\Template\Context;
  * This block enriches the static JsLayout configuration defined in XML with
  * dynamic search terms and store-specific URLs.
  */
-class SearchTerms extends Template
+class SearchTerms extends Template implements IdentityInterface
 {
     /**
      * Default number of terms if none provided in XML or System Config.
@@ -118,5 +120,16 @@ class SearchTerms extends Template
             null,
             (int)$limit
         );
+    }
+
+    /**
+     * Return identifiers for produced content
+     *
+     * @return string[]
+     */
+    public function getIdentities(): array
+    {
+        // This ensures the block clears if Search Terms are updated
+        return [Query::CACHE_TAG];
     }
 }
