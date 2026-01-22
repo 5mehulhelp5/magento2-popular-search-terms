@@ -50,6 +50,12 @@
                     <validate>validate-number validate-greater-than-zero</validate>
                     <comment>Number of days to look back for search terms</comment>
                 </field>
+
+                <field id="cache_lifetime" translate="label comment" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Cache Lifetime (seconds)</label>
+                    <validate>validate-number validate-digits</validate>
+                    <comment>Time in seconds to cache the search terms data (e.g. 3600 for 1 hour). Set to null to disable caching.</comment>
+                </field>
             </group>
         </section>
     </system>
