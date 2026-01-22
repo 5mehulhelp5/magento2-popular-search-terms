@@ -73,33 +73,70 @@ bin/magento cache:clean
 * **Time Period (days)**: Number of days to look back for search terms.
 * **Cache Lifetime (seconds)**: Time to cache the search terms data (e.g., 3600 for 1 hour).
 
-
-
 ## Customization
 
 ### XML Layout
 
-The module can be extensively customized via layout XML:
+The module is now deeply integrated with Magento's `jsLayout` system. You can override any configuration parameter directly in your layout XML:
 
 ```xml
 <referenceContainer name="sidebar.additional">
     <block class="Amadeco\PopularSearchTerms\Block\SearchTerms"
-           name="amadeco.search.terms"
+           name="amadeco.popular.search.terms"
+           template="Amadeco_PopularSearchTerms::search_terms.phtml"
            ifconfig="catalog/popular_search_terms/enabled">
         <arguments>
-            <argument name="max_recent_searches" xsi:type="number">5</argument>
-            
-            <argument name="search_form_id" xsi:type="string">search_mini_form</argument>
-            <argument name="search_input_name" xsi:type="string">q</argument>
-            <argument name="storage_key" xsi:type="string">recent-searches</argument>
-            
             <argument name="jsLayout" xsi:type="array">
                 <item name="components" xsi:type="array">
                     <item name="search-terms" xsi:type="array">
                         <item name="component" xsi:type="string">Amadeco_PopularSearchTerms/js/search-terms</item>
                         <item name="config" xsi:type="array">
                             <item name="template" xsi:type="string">Amadeco_PopularSearchTerms/search-terms-template</item>
-                            <item name="hasRecentSearches" xsi:type="boolean">true</item>
+                            <item name="max_recent_searches" xsi:type="number">5</item>
+                            <item name="number_of_terms" xsi:type="number">10</item>
+                            <item name="search_form_id" xsi:type="string">search_mini_form</item>
+                            <item name="search_input_name" xsi:type="string">q</item>
+                            <item name="storage_key" xsi:type="string">recent-searches</item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
+    </block>
+</referenceContainer>
+```
+
+Effectivement, l'exemple XML précédent mélangeait l'ancienne logique (arguments directs) et la nouvelle (intégration profonde `jsLayout`). Dans la version actuelle de la branche **main**, tout passe par la configuration du composant UI au sein du `jsLayout`.
+
+Voici la correction pour la première étape, suivie de la deuxième étape demandée.
+
+### Première étape : README.md (Section Customization corrigée)
+
+```markdown
+## Customization
+
+### XML Layout
+
+The module is now deeply integrated with Magento's `jsLayout` system. You can override any configuration parameter directly in your layout XML:
+
+```xml
+<referenceContainer name="sidebar.additional">
+    <block class="Amadeco\PopularSearchTerms\Block\SearchTerms"
+           name="amadeco.popular.search.terms"
+           template="Amadeco_PopularSearchTerms::search_terms.phtml"
+           ifconfig="catalog/popular_search_terms/enabled">
+        <arguments>
+            <argument name="jsLayout" xsi:type="array">
+                <item name="components" xsi:type="array">
+                    <item name="search-terms" xsi:type="array">
+                        <item name="component" xsi:type="string">Amadeco_PopularSearchTerms/js/search-terms</item>
+                        <item name="config" xsi:type="array">
+                            <item name="template" xsi:type="string">Amadeco_PopularSearchTerms/search-terms-template</item>
+                            <item name="max_recent_searches" xsi:type="number">5</item>
+                            <item name="number_of_terms" xsi:type="number">10</item>
+                            <item name="search_form_id" xsi:type="string">search_mini_form</item>
+                            <item name="search_input_name" xsi:type="string">q</item>
+                            <item name="storage_key" xsi:type="string">recent-searches</item>
                         </item>
                     </item>
                 </item>
@@ -112,10 +149,13 @@ The module can be extensively customized via layout XML:
 
 ### Configuration Parameters
 
-* **max_recent_searches**: Maximum number of recent searches to display (default: 5).
-* **search_form_id**: ID of the search form to monitor (default: "search_mini_form").
-* **search_input_name**: Name of the input field containing the search term (default: "q").
-* **storage_key**: Key used to store recent searches in client storage (default: "recent-searches").
+These parameters are available within the `config` node of the `search-terms` component:
+
+* **max_recent_searches**: Maximum number of recent searches to display and save (default: 5).
+* **number_of_terms**: Overrides the system configuration for the number of popular terms to fetch (Direct mode only).
+* **search_form_id**: The HTML ID of the search form to monitor for building the history (default: "search_mini_form").
+* **search_input_name**: The `name` attribute of the search input field (default: "q").
+* **storage_key**: The key used in LocalStorage, prefixed by `amadeco:` (default: "recent-searches").
 
 ### Styling
 
