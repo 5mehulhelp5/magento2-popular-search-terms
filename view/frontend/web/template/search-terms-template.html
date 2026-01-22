@@ -15,13 +15,11 @@
     <!-- Recent Searchs -->
     <div data-bind="visible: !loading() && hasRecentSearches()" class="recent-searches-section">
         <h4 data-bind="i18n: 'Your Recent Searches'"></h4>
-        <ul class="recent-searches-list">
-            <!-- ko foreach: recentSearches -->
+        <ul class="recent-searches-list" data-bind="foreach: recentSearches">
             <li>
                 <a data-bind="attr: {href: $parent.getSearchUrl($data.query_text)}, text: $data.query_text"></a>
                 <span class="search-date" data-bind="text: $parent.formatDate($data.timestamp)"></span>
             </li>
-            <!-- /ko -->
         </ul>
         <div class="actions">
             <button type="button" class="action secondary" data-bind="click: clearRecentSearches, i18n: 'Clear Recent Searches'"></button>
@@ -31,13 +29,11 @@
     <!-- Popular Searchs -->
     <div data-bind="visible: !loading() && !error() && terms().length > 0" class="popular-terms-section">
         <h4 data-bind="i18n: 'Popular Search Terms'"></h4>
-        <ul class="popular-terms-list">
-            <!-- ko foreach: terms -->
+        <ul class="popular-terms-list" data-bind="foreach: terms">
             <li>
                 <a data-bind="attr: {href: $parent.getSearchUrl($data.query_text)}, text: $data.query_text"></a>
                 <span class="term-popularity" data-bind="text: '(' + $data.popularity + ')'"></span>
             </li>
-            <!-- /ko -->
         </ul>
     </div>
 
